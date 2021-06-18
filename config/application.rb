@@ -37,5 +37,10 @@ module NextPlace
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
     config.autoload_paths += %W(#{config.root}/lib #{config.root}/services)
+
+    Google::Maps.configure do |config|
+      config.authentication_mode = Google::Maps::Configuration::API_KEY
+      config.api_key = ENV['GOOGLE_API']
+    end
   end
 end

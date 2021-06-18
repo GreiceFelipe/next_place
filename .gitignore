@@ -30,3 +30,4 @@
 *.swp
 *.DS_Store
 .tool-versions
+.env
