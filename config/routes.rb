@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
-  resources :users, only: [:create, :update, :show]
+  resources :users, only: [:create]
+  get '/user', to: 'users#show'
+  post 'user', to: 'users#update'
   post '/auth/login', to: 'authentication#login'
   resources :places, only: [:create]
   get '/find_places', to: 'places#find_places'

@@ -1,40 +1,33 @@
 class UsersController < ApplicationController
   before_action :authorize_request, except: :create
-  before_action :find_user, except: %i[create]
 
   def show
-    render json: @user, status: :ok
+    render json: UserSerializer.new(@current_user).as_json, status: :ok
   end
 
   def create
-    @user = User.new(user_params)
-    if @user.save
-      render json: @user, status: :created
+    user = User.new(user_params)
+    if user.save
+      render json: UserSerializer.new(user).as_json, status: :created
     else
-      render json: { errors: @user.errors.full_messages },
+      render json: { errors: user.errors.full_messages },
              status: :unprocessable_entity
     end
   end
 
+  #TODO - Não funciona quando não coloca o password e não reclama do password_confirmation quando branco
   def update
-    unless @user.update(user_params)
-      render json: { errors: @user.errors.full_messages },
+    user_params.delete(:password) unless user_params[:password].present?
+    user_params.delete(:password_confirmation) unless user_params[:password_confirmation].present?
+    if @current_user.update(user_params)
+      render json: UserSerializer.new(@current_user).as_json, status: :ok
+    else
+      render json: { errors: @current_user.errors.full_messages },
              status: :unprocessable_entity
     end
-  end
-
-  def destroy
-    @user.destroy
   end
 
   private
-
-  # TODO - Dessa maneira todo usuário pode ver e atualizar os demais ver forma melhor
-  def find_user
-    @user = User.find(params[:id])
-    rescue ActiveRecord::RecordNotFound
-      render json: { errors: 'User not found' }, status: :not_found
-  end
 
   def user_params
     params.permit(:email, :password, :password_confirmation)
