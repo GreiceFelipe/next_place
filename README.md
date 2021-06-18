@@ -1,24 +1,63 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+* Ruby version 3.0.1
 
-Things you may want to cover:
+* Rails version 6.1.3
 
-* Ruby version
+* postgresql
 
-* System dependencies
+### Configurações
 
-* Configuration
+Para instalar todas as dependências do rails:
 
-* Database creation
+```
+bundle
 
-* Database initialization
+```
 
-* How to run the test suite
+### Criar o banco de dados
 
-* Services (job queues, cache servers, search engines, etc.)
+```
+rails db:create
+```
 
-* Deployment instructions
+### Configurar o banco de dados
 
-* ...
+```
+rails db:migrate
+```
+
+### Preenchimento do banco utilizando o seed
+
+```
+rails db:seed
+```
+#### Para rodar o rspec 
+
+```
+rspec
+```
+
+#### Para rodar o projeto 
+
+```
+rails s
+```
+
+#### Routes 
+
+```
+users POST   /users users#create
+user GET    /user show#users
+POST   /user  update#users
+
+places POST   /places places#create
+find_places GET    /find_places  places#findplaces
+list_places GET    /list_places places#listplaces
+map_list_places GET    /map_list_places places#map_list_places
+rate_places POST   /rate_places rate_places#create
+rates_by_place GET    /rates_by_place   rate_places#rates_by_place
+
+```
+
+
