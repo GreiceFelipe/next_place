@@ -16,7 +16,9 @@ class PlacesController < ApplicationController
             address: place.address,
             maps_id: place.place_id,
             url: place.url,
-            user: @current_user
+            user: @current_user,
+            latitude: place.latitude,
+            longitude: place.longitude
           )
           render json: new_place, status: :created
         rescue Google::Maps::InvalidResponseException => error
@@ -42,20 +44,35 @@ class PlacesController < ApplicationController
 
   # TODO - api pagination
   def list_places
-    places = Place.order(:name).limit(20)
+    places = Place.order(:name).limit(10)
 
     render json: places, status: :ok
   end
 
+  # TODO - api pagination
+  # TOD - com muita responsabilidade refatorar
   def map_list_places
     if params[:origin_id].present?
-      begin
-        place2 = Google::Maps.place("ChIJWwF7cl3qx0cRqYoFvgBsj00")
-        place = Google::Maps.place("ChIJVXealLU_xkcRja_At0z9AGY")
-        r = Google::Maps.route(place.address, place2.address)
-        render json: { r: r.distance.value }, status: :ok
-      rescue Google::Maps::ZeroResultsException => error
-        render json: { errors: error }, status: :unprocessable_entity
+      origin = Place.find_by(maps_id: params[:origin_id])
+      if origin.present?
+        places = Place.where.not(id: origin.id).limit(10)
+        places_by_distance = {}
+
+        places.each do |place|
+          lat1 = origin.latitude
+          lat2 = place.latitude
+          log1 = origin.longitude
+          log2 = place.longitude
+
+          dist = DistanceService.new(lat1, lat2, log1, log2).call
+          places_by_distance[place.id] = dist
+        end
+        ids = places_by_distance.sort_by{|k, v| v}.map{|id,v| id}
+        
+        render json: ids.collect {|i| Place.find(i) }, status: :ok
+      else
+        render json: { errors: 'Place not found' },
+             status: :not_found
       end
     else
       render json: { errors: 'Origin params can be blank' },

@@ -29,6 +29,7 @@ class UsersController < ApplicationController
 
   private
 
+  # TODO - Dessa maneira todo usuário pode ver e atualizar os demais ver forma melhor
   def find_user
     @user = User.find(params[:id])
     rescue ActiveRecord::RecordNotFound

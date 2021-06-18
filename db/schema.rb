@@ -21,6 +21,8 @@ ActiveRecord::Schema.define(version: 2021_06_16_235435) do
     t.string "url"
     t.string "address"
     t.bigint "user_id"
+    t.float "latitude"
+    t.float "longitude"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_places_on_user_id"

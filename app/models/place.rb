@@ -3,6 +3,8 @@ class Place < ApplicationRecord
   validates :name, presence: true
   validates :url, presence: true
   validates :address, presence: true
+  validates :longitude, presence: true
+  validates :latitude, presence: true
 
   validates :maps_id, uniqueness: true
 
